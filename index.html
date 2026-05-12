@@ -1,33 +1,194 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRUD de Usuarios</title>
+  <meta name="description" content="CRUD de usuarios en JavaScript puro con animaciones, localStorage, búsqueda, importación, exportación y modo oscuro.">
+  <meta name="theme-color" content="#7c3aed">
+  <title>CRUD de Usuarios Pro</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-one" aria-hidden="true"></div>
+  <div class="orb orb-two" aria-hidden="true"></div>
+  <div class="orb orb-three" aria-hidden="true"></div>
 
-  <div class="contenedor">
-    <h1>CRUD de Usuarios</h1>
+  <header class="hero" id="inicio">
+    <nav class="topbar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+        <span class="brand-icon">⚡</span>
+        <span>CRUD<span>Usuarios</span></span>
+      </a>
 
-    <form id="formUsuario">
-      <input type="text" id="nombre" placeholder="Nombre">
-      <input type="email" id="email" placeholder="Email">
-      <button type="submit" id="btnGuardar">Guardar</button>
-    </form>
+      <button class="btn btn-ghost theme-toggle" type="button" id="themeToggle" aria-label="Cambiar tema">
+        <span id="themeIcon" aria-hidden="true">🌙</span>
+        Tema
+      </button>
+    </nav>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tablaUsuarios"></tbody>
-    </table>
-  </div>
+    <section class="hero-grid">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">JavaScript puro + localStorage</p>
+        <h1>Gestiona usuarios con una interfaz rápida, animada y responsive.</h1>
+        <p>
+          Un CRUD moderno con búsqueda en vivo, validaciones, acciones seguras,
+          exportación/importación JSON y microinteracciones suaves.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#panel">Empezar ahora</a>
+          <button class="btn btn-soft" type="button" id="btnDemo">Cargar usuarios demo</button>
+        </div>
+      </div>
+
+      <aside class="hero-card reveal delay-1" aria-label="Resumen visual de la aplicación">
+        <div class="live-pill"><span></span> En vivo</div>
+        <div class="mini-dashboard">
+          <div class="mini-row active">
+            <span class="mini-avatar">AR</span>
+            <div>
+              <strong>Angel Rivera</strong>
+              <small>angel@dev.com</small>
+            </div>
+          </div>
+          <div class="mini-row">
+            <span class="mini-avatar">JS</span>
+            <div>
+              <strong>Código limpio</strong>
+              <small>helpers, estado y eventos</small>
+            </div>
+          </div>
+          <div class="mini-chart" aria-hidden="true">
+            <span style="--height:55%"></span>
+            <span style="--height:88%"></span>
+            <span style="--height:42%"></span>
+            <span style="--height:72%"></span>
+            <span style="--height:96%"></span>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </header>
+
+  <main class="app-shell" id="panel">
+    <section class="stats-grid" aria-label="Estadísticas">
+      <article class="stat-card reveal">
+        <span>Total usuarios</span>
+        <strong id="totalUsuarios">0</strong>
+      </article>
+      <article class="stat-card reveal delay-1">
+        <span>Dominios únicos</span>
+        <strong id="totalDominios">0</strong>
+      </article>
+      <article class="stat-card reveal delay-2">
+        <span>Último cambio</span>
+        <strong id="ultimoCambio">Sin cambios</strong>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <article class="panel-card form-card reveal">
+        <div class="section-heading">
+          <span class="section-icon">🧩</span>
+          <div>
+            <p class="eyebrow">Formulario</p>
+            <h2 id="formTitle">Nuevo usuario</h2>
+          </div>
+        </div>
+
+        <form id="formUsuario" class="user-form" novalidate>
+          <div class="form-grid">
+            <label class="field" for="nombre">
+              <span>Nombre completo</span>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej: Laura Gómez" autocomplete="name" minlength="2" required>
+            </label>
+
+            <label class="field" for="email">
+              <span>Correo electrónico</span>
+              <input type="email" id="email" name="email" placeholder="Ej: laura@email.com" autocomplete="email" required>
+            </label>
+          </div>
+
+          <p class="form-error" id="formError" role="alert" aria-live="polite"></p>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit" id="btnGuardar">
+              <span aria-hidden="true">💾</span>
+              Guardar usuario
+            </button>
+            <button class="btn btn-ghost hidden" type="button" id="btnCancelar">
+              Cancelar edición
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="panel-card table-card reveal delay-1">
+        <div class="table-header">
+          <div class="section-heading">
+            <span class="section-icon">📋</span>
+            <div>
+              <p class="eyebrow">Directorio</p>
+              <h2>Usuarios guardados</h2>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <label class="search-box" for="buscar">
+              <span aria-hidden="true">🔎</span>
+              <input type="search" id="buscar" placeholder="Buscar por nombre o email, Ctrl + K">
+            </label>
+
+            <div class="toolbar-actions" aria-label="Acciones de datos">
+              <button class="btn btn-soft compact" type="button" id="btnExportar">Exportar</button>
+              <button class="btn btn-soft compact" type="button" id="btnImportar">Importar</button>
+              <button class="btn btn-danger compact" type="button" id="btnLimpiar">Limpiar</button>
+              <input type="file" id="archivoImportar" accept="application/json" hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-describedby="tableDescription">
+            <caption id="tableDescription">
+              Lista de usuarios con opciones para editar o eliminar registros.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Usuario</th>
+                <th scope="col">Email</th>
+                <th scope="col">Actualizado</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuarios"></tbody>
+          </table>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <div class="empty-illustration" aria-hidden="true">🪄</div>
+            <h3>No hay usuarios para mostrar</h3>
+            <p>Agrega uno nuevo o carga datos demo para probar la app.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <dialog class="confirm-dialog" id="confirmDialog" aria-labelledby="confirmTitle">
+    <div class="dialog-card">
+      <span class="dialog-icon" aria-hidden="true">⚠️</span>
+      <h2 id="confirmTitle">Confirmar acción</h2>
+      <p id="confirmMessage">¿Seguro que quieres continuar?</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" id="btnDialogCancel">Cancelar</button>
+        <button class="btn btn-danger" type="button" id="btnDialogConfirm">Sí, continuar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
   <script src="script.js"></script>
 </body>
